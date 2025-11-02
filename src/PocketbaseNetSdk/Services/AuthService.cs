@@ -9,7 +9,6 @@ namespace PocketbaseNetSdk.Services
         where AuthModel : BaseAuthModel, new()
     {
         readonly ILogger<AuthService<AuthModel>>? _authLogger;
-        readonly ITokenService _tokenService;
 
         public override string CollectionName => "users";
 
@@ -23,10 +22,9 @@ namespace PocketbaseNetSdk.Services
             return $"/api/collections/{CollectionName}";
         }
 
-        public AuthService(PocketbaseClient client, ITokenService tokenService, ILogger<AuthService<AuthModel>>? logger = null) : base(client, logger)
+        public AuthService(PocketbaseClient client, ILogger<AuthService<AuthModel>>? logger = null) : base(client, logger)
         {
             _authLogger = logger;
-            _tokenService = tokenService;
         }
 
         public async Task<Result<TokenResponse>> AuthWithPassword(PasswordLoginRequest request)
@@ -47,7 +45,7 @@ namespace PocketbaseNetSdk.Services
 
             if (response.IsSuccess && response.Value is not null)
             {
-                _tokenService.Token = response.Value.Token;
+                Client.TokenService.Token = response.Value.Token;
                 _authLogger?.LogTrace("Token set successfully");
 
                 return Result<TokenResponse>.Success(response.Value);
@@ -73,7 +71,7 @@ namespace PocketbaseNetSdk.Services
 
             if (response.IsSuccess && response.Value is not null)
             {
-                _tokenService.Token = response.Value.Token;
+                Client.TokenService.Token = response.Value.Token;
                 _authLogger?.LogTrace("Token set successfully");
 
                 return Result<TokenResponse>.Success(response.Value);
@@ -93,7 +91,7 @@ namespace PocketbaseNetSdk.Services
 
             if(validateToken)
             {
-                bool IsTokenValid = _tokenService.IsValid();
+                bool IsTokenValid = Client.TokenService.IsValid();
 
                 if (!IsTokenValid)
                 {
@@ -101,7 +99,7 @@ namespace PocketbaseNetSdk.Services
                 }
             }
 
-            return _tokenService.Token!;
+            return Client.TokenService.Token!;
         }
     }
 }
