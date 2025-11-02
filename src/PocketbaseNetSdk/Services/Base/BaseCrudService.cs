@@ -78,7 +78,7 @@ namespace PocketbaseNetSdk.Services.Base
             return Result<PocketbaseList<TModel>>.Success(result.Value!);
         }
 
-        public async Task<Result<TModel>> View(string id)
+        public async Task<Result<TModel>> ViewAsync(string id)
         {
             _logger?.LogTrace("View called for ID: {Id}", id);
 

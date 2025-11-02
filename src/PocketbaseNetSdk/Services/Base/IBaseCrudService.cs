@@ -27,7 +27,7 @@ namespace PocketbaseNetSdk.Services.Base
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<Result<TModel>> View(string id);
+        public Task<Result<TModel>> ViewAsync(string id);
         /// <summary>
         /// Updates an existing model in the Pocketbase collection.
         /// </summary>
