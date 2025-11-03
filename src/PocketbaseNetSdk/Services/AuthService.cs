@@ -9,6 +9,7 @@ namespace PocketbaseNetSdk.Services
         where AuthModel : BaseAuthModel, new()
     {
         readonly ILogger<AuthService<AuthModel>>? _authLogger;
+        private readonly ITokenService _tokenService;
 
         public override string CollectionName => "users";
 
@@ -22,9 +23,10 @@ namespace PocketbaseNetSdk.Services
             return $"/api/collections/{CollectionName}";
         }
 
-        public AuthService(PocketbaseClient client, ILogger<AuthService<AuthModel>>? logger = null) : base(client, logger)
+        public AuthService(PocketbaseClient client, ITokenService tokenservice, ILogger<AuthService<AuthModel>>? logger = null) : base(client, logger)
         {
             _authLogger = logger;
+            _tokenService = tokenservice;
         }
 
         public async Task<Result<TokenResponse>> AuthWithPassword(PasswordLoginRequest request)
@@ -45,7 +47,7 @@ namespace PocketbaseNetSdk.Services
 
             if (response.IsSuccess && response.Value is not null)
             {
-                Client.TokenService.Token = response.Value.Token;
+                _tokenService.Token = response.Value.Token;
                 _authLogger?.LogTrace("Token set successfully");
 
                 return Result<TokenResponse>.Success(response.Value);
@@ -71,7 +73,7 @@ namespace PocketbaseNetSdk.Services
 
             if (response.IsSuccess && response.Value is not null)
             {
-                Client.TokenService.Token = response.Value.Token;
+                _tokenService.Token = response.Value.Token;
                 _authLogger?.LogTrace("Token set successfully");
 
                 return Result<TokenResponse>.Success(response.Value);
@@ -91,7 +93,7 @@ namespace PocketbaseNetSdk.Services
 
             if(validateToken)
             {
-                bool IsTokenValid = Client.TokenService.IsValid();
+                bool IsTokenValid = _tokenService.IsValid();
 
                 if (!IsTokenValid)
                 {
@@ -99,7 +101,21 @@ namespace PocketbaseNetSdk.Services
                 }
             }
 
-            return Client.TokenService.Token!;
+            return _tokenService.Token!;
+        }
+
+        public Result SetToken(string token)
+        {
+            try
+            {
+                _tokenService.Token = token;
+            }
+            catch (Exception)
+            {
+                return Result.Failure("Failed to set token");
+            }
+
+            return Result.Success();
         }
     }
 }

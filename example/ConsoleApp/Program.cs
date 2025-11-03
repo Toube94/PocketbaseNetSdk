@@ -9,10 +9,12 @@ namespace ConsoleApp
     {
         static async Task Main(string[] args)
         {
+            //Create token service
+            ITokenService tokenService = new TokenService();
             //Create PocketBaseClient which connnects to PocketBase
-            var pocketBaseClient = new PocketbaseClient("http://127.0.0.1:8090");
+            var pocketBaseClient = new PocketbaseClient("http://127.0.0.1:8090", tokenService);
             //Create AuthService. ExampleAuthModel is a custom auth model which extends BaseAuthModel
-            IAuthService authService = new AuthService<BaseAuthModel>(pocketBaseClient);
+            IAuthService authService = new AuthService<BaseAuthModel>(pocketBaseClient, tokenService);
             //Create a email/password login request. Replace with your own email and password
             var loginRequest = new PasswordLoginRequest
             {

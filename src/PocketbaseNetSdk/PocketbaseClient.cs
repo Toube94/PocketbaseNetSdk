@@ -13,16 +13,16 @@ namespace PocketbaseNetSdk
         private readonly ILogger<PocketbaseClient>? _logger;
         readonly ITokenService _tokenService;
 
-        public ITokenService TokenService => _tokenService;
+        //public ITokenService TokenService => _tokenService;
 
-        public PocketbaseClient(string baseUrl, ITokenService? tokenService = null, ILogger<PocketbaseClient>? logger = null, HttpClient? httpClient = null)
+        public PocketbaseClient(string baseUrl, ITokenService tokenService, ILogger<PocketbaseClient>? logger = null, HttpClient? httpClient = null)
         {
             _logger = logger;
             HttpClient = httpClient ?? new HttpClient();
 
             HttpClient.BaseAddress = new Uri(baseUrl);
 
-            _tokenService = tokenService ?? new TokenService();
+            _tokenService = tokenService;
         }
 
         public async Task<Result<T?>> SendJsonRequestAsync<T, R>(HttpMethod httpMethod, string path, R? requestBody = null, 

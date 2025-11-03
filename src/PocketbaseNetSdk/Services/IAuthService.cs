@@ -22,5 +22,7 @@ namespace PocketbaseNetSdk.Services
         /// <param name="validateToken"></param>
         /// <returns></returns>
         public Task<string?> GetToken(bool refresh = false, bool validateToken = false);
+
+        public Result SetToken(string token);
     }
 }
