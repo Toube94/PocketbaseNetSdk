@@ -11,11 +11,13 @@ coming soon
 ## Usage
 ### Auth
 ```
+            //Create token service
+            ITokenService tokenService = new TokenService();
             //Create PocketBaseClient which connnects to PocketBase
-            var pocketBaseClient = new PocketbaseClient("http://127.0.0.1:8090");
+            var pocketBaseClient = new PocketbaseClient("http://127.0.0.1:8090", tokenService);
 
-            //Create AuthService.
-            IAuthService authService = new AuthService<BaseAuthModel>(pocketBaseClient);
+            //Create AuthService. 
+            IAuthService authService = new AuthService<BaseAuthModel>(pocketBaseClient, tokenService);
 
             //Create a email/password login request. Replace with your own email and password
             var loginRequest = new PasswordLoginRequest
